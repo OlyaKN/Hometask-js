@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Test</title>
+ </head>
+ <body>
+   <input type="button" onclick="addInfoDrink()" value="Ввод информации о напитке"/>
+   <input type="button" onclick="getInfoDrink()" value="Получение информации о напитке"/>
+   <input type="button" onclick="deleteDrink()" value="Удаление информации о напитке"/>
+   <input type="button" onclick="listOfDrink()" value="Перечень всех напитков"/>
+   <p id="nameOfTheDrink"></p>
+   <p id="listOfTheDrink"></p>
+   <script>
+   class HashStorage {
+
+     constructor () {
+       this.storage = {}
+     }
+     addValue(key, value) {
+       this.storage[key] = value
+     }
+     getValue(key) {
+       return this.storage[key];
+     }
+     deleteValue(key) {
+       delete this.storage[key];
+     }
+     getKeys() {
+       return Object.keys(this.storage)
+     }
+   };
+
+function testHashStorageClass(){
+     var inst = new HashStorage();
+     inst.addValue("test", "testValue");
+     console.log('test read/write', inst.getValue('test') === 'testValue',  inst.getValue('test'));
+     inst.deleteValue('test');
+     console.log('test delete from storage', inst.getValue('test') === undefined);
+     console.log('test get keys, empty after delete', inst.getKeys().join(',') === '', inst.getKeys());
+     inst.addValue("test2", "test2Value");
+     console.log('test get keys, add one more value', inst.getKeys().join(',') === 'test2', inst.getKeys());
+     inst.addValue("test3", "test3Value");
+     console.log('test get keys, add one more value', inst.getKeys().join(',') === 'test2,test3', inst.getKeys());
+   }
+ var drinkStorage = new HashStorage();
+
+ function addInfoDrink() {
+   var nameDrink = prompt("Введите название напитка", "");
+   var alcohol = confirm("Напиток алкогольный?", "");
+   var recipe = prompt("Введите рецепт", "");
+   drinkStorage.addValue(nameDrink, { alcohol, recipe });
+   console.log("new drink added", drinkStorage.getValue(nameDrink), drinkStorage.getKeys())
+   }
+ function addInfoDrinkTest() {
+     var drink = new HashStorage()
+     var nameDrink = "margarita";
+     var alcohol = true;
+     var recipe = "test";
+     drink.addValue(nameDrink, { alcohol, recipe });
+     console.log('test get value alcohol', drink.getValue("margarita").alcohol === true);
+     console.log('test get value recipe', drink.getValue("margarita").recipe === "test");
+     console.log('test get value recipe', drink.getKeys().join (",") === "margarita");
+   }
+
+   function getInfoDrink () {
+     var drinkKey = prompt("Введите название напитка", "");
+     var drinkValue = drinkStorage.getValue(drinkKey);
+     var isValue = drinkValue !== undefined;
+     if (isValue) {
+       const alcoholValue = drinkValue.alcohol ? 'Алькольный': "Безалкогольный";
+       const recipeValue = drinkValue.recipe;
+       document.getElementById('nameOfTheDrink').innerHTML =
+       `
+       <div>Содержание алкоголя: <strong>${alcoholValue}</strong></div>
+       <div>Рецепт: <strong>${recipeValue}</strong></div>
+       `;
+     } else {
+       document.getElementById('nameOfTheDrink').innerHTML = 'Такого напитка нет в хранилище';
+     }
+   }
+   function deleteDrink () {
+     var drinkKeyGet = prompt("Введите название напитка", "");
+     var drinkForDelete =  drinkStorage.deleteValue(drinkKeyGet);
+     alert ("Напиток удален");
+   }
+   function listOfDrink () {
+     document.getElementById('listOfTheDrink').innerHTML = drinkStorage.getKeys();
+   }
+
+
+   //testHashStorageClass();
+   //addInfoDrinkTest();
+   //getInfoDrinkTest();
+   </script>
+ </body>
+</html>
